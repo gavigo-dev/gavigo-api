@@ -1,0 +1,14 @@
+# vscode
+.vscode/
+
+node_modules/
+dist/
+
+.env
+
+# Local Netlify folder
+.netlify
+
+
+# mocks
+local
