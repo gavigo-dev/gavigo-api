@@ -1,7 +1,6 @@
 import moment from 'moment'
 import { compareMovies, getMovieOfDay } from '../auxiliary.mjs'
 import { handlePagination } from '../../../utils/queryUtils.mjs'
-import responseHandler, { ErrorData } from '../../../utils/responseHandler.mjs'
 import languages from '../../../constants/languages.mjs'
 import {
     LANGUAGE_NOT_PROVIDED,
@@ -9,7 +8,7 @@ import {
 } from '../../../constants/errors.mjs'
 
 import Movie from '../models/Movie.model.mjs'
-import mongoose from 'mongoose'
+import responseHandler from '../../../core/handlers/ResponseHandler.mjs'
 
 export const findAll = responseHandler(async ({ req }) => {
     const { page, limit } = req.query
@@ -23,22 +22,24 @@ export const findAll = responseHandler(async ({ req }) => {
     const { elements, total } = query[0]
     const totalPages = Math.ceil(total / perPage)
     return {
-        movies: elements,
-        totalPages
+        data: {
+            movies: elements,
+            totalPages
+        }
     }
 })
 
-export const autocomplete = responseHandler(async ({ req }) => {
+export const autocomplete = responseHandler(async ({ req, fail }) => {
     const { text, lang } = req.query
 
     if (!text) {
-        return { movies: [] }
+        return { data: { movies: [] } }
     }
     if (!lang) {
-        throw new ErrorData(LANGUAGE_NOT_PROVIDED)
+        fail(LANGUAGE_NOT_PROVIDED)
     }
     if (!languages.includes(lang)) {
-        throw new ErrorData(LANGUAGE_NOT_SUPPORTED)
+        fail(LANGUAGE_NOT_SUPPORTED)
     }
 
     const query = await Movie.aggregate([
@@ -63,10 +64,10 @@ export const autocomplete = responseHandler(async ({ req }) => {
         { $limit: 5 },
         { $project: { score: 0 } }
     ])
-    return { movies: query }
+    return { data: { movies: query } }
 })
 
-export const guessMovie = responseHandler(async ({ req }) => {
+export const guessMovie = responseHandler(async ({ req, fail }) => {
     const { movieIds } = req.body
 
     const ids = Array.isArray(movieIds)
@@ -89,7 +90,7 @@ export const guessMovie = responseHandler(async ({ req }) => {
     const guessing = await Movie.find({ _id: { $in: ids } })
 
     if (!guessing) {
-        throw new ErrorData({
+        fail({
             code: 'MOVIE_NOT_FOUND',
             message: 'No movie found for the MovieId provided'
         })
@@ -100,7 +101,7 @@ export const guessMovie = responseHandler(async ({ req }) => {
         comparison._id = el._id
         return comparison
     })
-    return { result }
+    return { data: { result } }
 })
 
 export const movieOfDay = responseHandler(async ({ req }) => {
@@ -118,7 +119,7 @@ export const movieOfDay = responseHandler(async ({ req }) => {
         })
 
     const { selected } = dailyMovie[0]
-    return { movie: selected }
+    return { data: { movie: selected } }
 })
 
 export const yesterdayMovie = responseHandler(async ({ req }) => {
@@ -134,13 +135,15 @@ export const yesterdayMovie = responseHandler(async ({ req }) => {
         })
 
     const { selected } = dailyMovie[0]
-    return { movie: selected, number: random }
+    return { data: { movie: selected, number: random } }
 })
 
 export const timeRemaining = responseHandler(async ({ req }) => {
     const remaining = moment().endOf('day').diff(moment(), 'minutes') + 1
     return {
-        remaining,
-        serverTime: moment().toISOString()
+        data: {
+            remaining,
+            serverTime: moment().toISOString()
+        }
     }
 })

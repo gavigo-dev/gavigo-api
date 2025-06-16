@@ -1,9 +1,9 @@
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 
-import responseHandler from '../../utils/responseHandler.mjs'
 import User from '../models/user.model.mjs'
 import { LOGIN_ERROR } from '../../constants/errors.mjs'
+import responseHandler from '../../core/handlers/ResponseHandler.mjs'
 
 const cryptoHash = (password, salt) =>
     crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex')
@@ -34,34 +34,40 @@ const signup = responseHandler(async ({ req }) => {
     const token = createToken(user._id)
 
     return {
-        message: 'Usuário cadastrado com sucesso',
-        token
+        data: {
+            message: 'Usuário cadastrado com sucesso',
+            token
+        }
     }
 })
 
-const login = responseHandler(async ({ req, error }) => {
+const login = responseHandler(async ({ req, fail }) => {
     const { email, password } = req.body
     const user = await User.findOne({ email }).exec()
     if (!user) {
-        error(LOGIN_ERROR)
+        fail(LOGIN_ERROR)
     }
 
     const macth = validatePaswordHash(password, user.password, user.salt)
     if (!macth) {
-        error(LOGIN_ERROR)
+        fail(LOGIN_ERROR)
     }
 
     const token = createToken(user._id)
     return {
-        message: 'Usuário logado com sucesso!',
-        token
+        data: {
+            message: 'Usuário logado com sucesso!',
+            token
+        }
     }
 })
 
 const authenticate = responseHandler(async ({ req }) => {
     return {
-        message: 'Usuário autenticado com sucesso!',
-        user: req.user
+        data: {
+            message: 'Usuário autenticado com sucesso!',
+            user: req.user
+        }
     }
 })
 

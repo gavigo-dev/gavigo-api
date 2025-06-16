@@ -1,20 +1,6 @@
 import { Model } from 'mongoose'
-import {
-    Readable,
-    Deletable,
-    Creatable,
-    Updatable,
-    Paginatable
-} from './Repository.interface.mjs'
 
-export default class Repository<T>
-    implements
-        Readable<T>,
-        Deletable,
-        Creatable<T>,
-        Updatable<T>,
-        Paginatable<T>
-{
+export default class Repository<T> {
     constructor(private model: Model<T>) {}
 
     async readOne(id: string): Promise<T | null> {
