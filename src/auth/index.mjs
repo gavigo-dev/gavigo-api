@@ -2,11 +2,10 @@ import jwt from 'jsonwebtoken'
 import User from './models/user.model.mjs'
 import { INVALID_TOKEN, UNAUTHORIZED_TOKEN } from '../constants/errors.mjs'
 
-
-const requireAuth = async (req, res, next) => {
+export const requireAuth = async (req, res, next) => {
     const token = req.headers?.authorization?.split(' ')[1]
 
-    if (!token) { 
+    if (!token) {
         res.status(400).json({
             code: 400,
             message: INVALID_TOKEN
@@ -29,13 +28,10 @@ const requireAuth = async (req, res, next) => {
                     message: UNAUTHORIZED_TOKEN
                 })
             } else {
-                req.user = user
+                const { _id, email } = user
+                req.user = { id: _id, email }
                 next()
             }
         }
     })
-}
-
-export default {
-    requireAuth
 }

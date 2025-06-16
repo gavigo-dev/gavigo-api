@@ -5,7 +5,8 @@ import responseHandler from '../../utils/responseHandler.mjs'
 import User from '../models/user.model.mjs'
 import { LOGIN_ERROR } from '../../constants/errors.mjs'
 
-const cryptoHash = (password, salt) => crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex')
+const cryptoHash = (password, salt) =>
+    crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex')
 
 const createPaswordHash = (password) => {
     const salt = crypto.randomBytes(16).toString('hex')
@@ -21,10 +22,9 @@ const validatePaswordHash = (password, hash, salt) => {
 
 const createToken = (userId) => {
     return jwt.sign({ userId }, process.env.JWT_SECRET, {
-        expiresIn: 172800
+        expiresIn: '2d'
     })
 }
-
 
 const signup = responseHandler(async ({ req }) => {
     const { email, password } = req.body
@@ -42,11 +42,15 @@ const signup = responseHandler(async ({ req }) => {
 const login = responseHandler(async ({ req, error }) => {
     const { email, password } = req.body
     const user = await User.findOne({ email }).exec()
-    if (!user) { error(LOGIN_ERROR) }
+    if (!user) {
+        error(LOGIN_ERROR)
+    }
 
     const macth = validatePaswordHash(password, user.password, user.salt)
-    if (!macth) { error(LOGIN_ERROR) }
-    
+    if (!macth) {
+        error(LOGIN_ERROR)
+    }
+
     const token = createToken(user._id)
     return {
         message: 'Usuário logado com sucesso!',
@@ -54,7 +58,15 @@ const login = responseHandler(async ({ req, error }) => {
     }
 })
 
+const authenticate = responseHandler(async ({ req }) => {
+    return {
+        message: 'Usuário autenticado com sucesso!',
+        user: req.user
+    }
+})
+
 export default {
     signup,
-    login
+    login,
+    authenticate
 }
