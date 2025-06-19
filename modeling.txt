@@ -1,0 +1,28 @@
+apis/
+    users-api/
+        user/
+            user.model.ts
+            user.schema.ts
+            user.entity.ts
+            user.repository.ts
+            user.service.ts
+            user.controller.ts
+            user.routes.ts
+    avatar-api/
+        ...
+    disney-api/
+        ...
+repositories/
+    base.repository.ts
+middlewares/
+    authMiddleware.ts
+    zodValidator.ts
+    handlers/
+        errorHandler.ts
+        requestHandler.ts
+        responseHandler.ts
+constants/
+    ...
+db.config.ts
+main-router.ts
+server.ts

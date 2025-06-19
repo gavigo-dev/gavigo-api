@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'dotenv/config'
 
 import router from './main-router.mjs'
+import { errorHandler } from './core/handlers/ErrorHandler.mjs'
 
 const app = express()
 
@@ -12,6 +13,9 @@ app.use(cors())
 app.use(express.static('public'))
 
 app.use('/', router)
+
+// Global error handler (should be the LAST middleware)
+app.use(errorHandler)
 
 app.listen(8888, () => {
     console.log(`Example app listening on port 8888`)

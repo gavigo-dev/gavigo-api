@@ -1,4 +1,4 @@
-import { ErrorDataConstant } from '../core/handlers/types/ErrorTypes'
+import { ErrorDataConstant } from '../handlers/types/ErrorTypes'
 
 // general
 export const INTERNAL_ERROR: ErrorDataConstant = {

@@ -6,6 +6,7 @@ export type ErrorDataConstant = {
 
 export interface ErrorData extends ErrorDataConstant {
     errors?: Record<string, string>
+    toDTO: () => ErrorDTO
 }
 
-export type ErrorDTO = Omit<ErrorData, 'status'>
+export type ErrorDTO = Omit<ErrorData, 'status' | 'toDTO'>
