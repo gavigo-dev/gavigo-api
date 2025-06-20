@@ -9,12 +9,15 @@
         "noImplicitAny": true,
         "allowJs": true,
         "outDir": "dist",
-        "rootDir": "."
+        "rootDir": ".",
+        "typeRoots": [
+            "./src/@types"
+        ]
     },
     "exclude": [
         "dist",
         "local",
         "functions",
         "eslint.config.js"
-    ]
+    ],
 }

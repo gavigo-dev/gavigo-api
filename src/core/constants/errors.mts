@@ -43,6 +43,11 @@ export const USER_NOT_FOUND: ErrorDataConstant = {
     message: 'User not found',
     status: 404
 }
+export const USER_ROLE_ANAUTHORIZED: ErrorDataConstant = {
+    code: 'USER_ROLE_ANAUTHORIZED',
+    message: 'Forbidden: insufficient role',
+    status: 403
+}
 
 // pagination
 export const PAGINTATION_PARAMS: ErrorDataConstant = {

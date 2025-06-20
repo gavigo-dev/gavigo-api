@@ -1,6 +1,7 @@
 import express from 'express'
-// import auth from './auth/routes.mjs'
 
+import authRouter from './apis/users-api/auth/auth.routes.mjs'
+import usersApi from './apis/users-api/user/user.routes.mjs'
 // import avatarApi from './apis/avatar-api/index.mjs'
 // import disneyApi from './apis/disney-api/index.mjs'
 
@@ -10,7 +11,9 @@ router.get('/', (_req, res) => {
     res.json({ message: 'Gavito API' })
 })
 
-// router.use('/auth', auth)
+router.use('/auth', authRouter)
+
+router.use('/users-api', usersApi)
 
 // router.use('/avatar-api', avatarApi)
 

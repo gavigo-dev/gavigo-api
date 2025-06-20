@@ -3,7 +3,7 @@ import { ApiError } from '../classes/ApiError.class.mjs'
 import { INTERNAL_ERROR } from '../constants/errors.mjs'
 import { ErrorDataConstant } from './types/ErrorTypes'
 
-export const createError = (
+export const dispatchError = (
     errorData: ErrorDataConstant,
     errors?: Record<string, string>
 ) => {
@@ -11,9 +11,9 @@ export const createError = (
 }
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    if (process.env.NODE_ENV !== 'prod') {
-        console.log((err as Error).message)
-    }
+    // if (process.env.NODE_ENV !== 'prod') {
+    console.log((err as Error).message)
+    // }
 
     const error = err instanceof ApiError ? err : new ApiError(INTERNAL_ERROR)
 

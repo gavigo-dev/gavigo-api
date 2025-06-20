@@ -1,16 +1,16 @@
 import { INTERNAL_ERROR } from '../constants/errors.mjs'
 import { ApiError } from '../classes/ApiError.class.mjs'
-import { createError } from './ErrorHandler.mjs'
+import { dispatchError } from './ErrorHandler.mjs'
 import { ResponseHandler } from './types/ResponseHandlerTypes'
 
-const responseHandler: ResponseHandler.Instance =
+export const responseHandler: ResponseHandler.Instance =
     (callback) => async (req, res, next) => {
         try {
             const providers: ResponseHandler.Providers = {
                 req,
                 res,
                 next,
-                fail: createError
+                fail: dispatchError
             }
             const callbackReturn = await callback(providers)
 
@@ -26,5 +26,3 @@ const responseHandler: ResponseHandler.Instance =
             res.status(error.status).json(error.toDTO())
         }
     }
-
-export default responseHandler
