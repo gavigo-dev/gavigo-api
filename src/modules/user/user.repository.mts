@@ -1,4 +1,4 @@
-import { BaseRepository } from '../../../core/repositories/base.repository.mjs'
+import { BaseRepository } from '../../core/repositories/base.repository.mjs'
 import UserModel from './user.model.mjs'
 import { toUserDTO, UserCreate, UserDTO, UserUpdate } from './user.entity.mjs'
 import { UserCreateSchema, UserUpdateSchema } from './user.schema.mjs'

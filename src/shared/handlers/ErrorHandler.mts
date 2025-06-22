@@ -1,6 +1,6 @@
 import { ErrorRequestHandler } from 'express'
-import { ApiError } from '../classes/ApiError.class.mjs'
-import { INTERNAL_ERROR } from '../constants/errors.mjs'
+import { ApiError } from '../../core/classes/ApiError.class.mjs'
+import { INTERNAL_ERROR } from '../../core/constants/errors.mjs'
 import { ErrorDataConstant } from './types/ErrorTypes'
 
 export const dispatchError = (

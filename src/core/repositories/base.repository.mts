@@ -1,8 +1,8 @@
 // src/repositories/base.repository.ts
 import { Model, Document, UpdateQuery } from 'mongoose'
 import { ZodSchema } from 'zod'
-import { QueryOptions } from './utils/queryParser.mjs'
-import { buildCustomFilters } from './utils/buildCustomFilters.mjs'
+import { QueryOptions } from '../../shared/utils/queryParser.mjs'
+import { buildCustomFilters } from '../../shared/utils/buildCustomFilters.mjs'
 
 interface Paginated<T> {
     data: T[]

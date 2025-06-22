@@ -7,7 +7,7 @@
     "scripts": {
         "build": "tsc",
         "build:watch": "tsc --watch",
-        "run:watch": "nodemon dist/src/server.mjs --watch dist",
+        "run:watch": "nodemon dist/src/main.mjs --watch dist",
         "dev": "npm-run-all --parallel build:watch run:watch",
         "net:dev": "netlify dev",
         "net:deploy": "netlify deploy",

@@ -3,7 +3,7 @@ import cors from 'cors'
 import 'dotenv/config'
 
 import router from './main-router.mjs'
-import { errorHandler } from './core/handlers/ErrorHandler.mjs'
+import { errorHandler } from './shared/handlers/ErrorHandler.mjs'
 
 const app = express()
 

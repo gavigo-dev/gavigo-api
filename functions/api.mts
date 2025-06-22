@@ -3,7 +3,7 @@ import cors from 'cors'
 import serverless from 'serverless-http'
 
 import router from '../src/main-router.mjs'
-import { errorHandler } from '../src/core/handlers/ErrorHandler.mts'
+import { errorHandler } from '../src/shared/handlers/ErrorHandler.mts'
 
 const app = express()
 

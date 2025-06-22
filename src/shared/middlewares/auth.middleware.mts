@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
-import { authenticate } from '../../apis/users-api/auth/auth.service.mjs'
-import { ApiError } from '../classes/ApiError.class.mjs'
+import { authenticate } from '../../modules/auth/auth.service.mjs'
+import { ApiError } from '../../core/classes/ApiError.class.mjs'
 import {
     INTERNAL_ERROR,
     INVALID_TOKEN,
     NO_TOKEN_PROVIDED,
     UNAUTHORIZED_TOKEN
-} from '../constants/errors.mjs'
+} from '../../core/constants/errors.mjs'
 import { dispatchError } from '../handlers/ErrorHandler.mjs'
 
 export const requireAuth = async (

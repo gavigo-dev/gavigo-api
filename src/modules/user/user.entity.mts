@@ -25,8 +25,8 @@ export interface UserDTO {
     nickname?: string
 }
 
-export interface UserCreate extends z.infer<typeof UserCreateSchema> {}
-export interface UserUpdate extends z.infer<typeof UserUpdateSchema> {}
+export interface UserCreate extends z.input<typeof UserCreateSchema> {}
+export interface UserUpdate extends z.input<typeof UserUpdateSchema> {}
 
 export function toUserDTO(user: User): UserDTO {
     return {

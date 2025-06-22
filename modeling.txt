@@ -1,28 +1,35 @@
-apis/
-    users-api/
-        user/
-            user.model.ts
-            user.schema.ts
-            user.entity.ts
-            user.repository.ts
-            user.service.ts
-            user.controller.ts
-            user.routes.ts
-    avatar-api/
-        ...
-    disney-api/
-        ...
-repositories/
-    base.repository.ts
-middlewares/
-    authMiddleware.ts
-    zodValidator.ts
-    handlers/
-        errorHandler.ts
-        requestHandler.ts
-        responseHandler.ts
-constants/
-    ...
-db.config.ts
-main-router.ts
-server.ts
+src/
+├── modules/
+│   ├── users/
+│   │   ├── user.controller.ts
+│   │   ├── user.service.ts
+│   │   ├── user.repository.ts
+│   │   ├── user.entity.ts
+│   │   ├── user.prisma.ts
+│   │   ├── user.schema.ts
+│   ├── auth/
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   ├── auth.schema.ts
+│   │   ├── refreshToken.model.ts
+├── shared/
+│   ├── handlers/
+│   │   ├── ErrorHandler.ts
+│   │   ├── ResponseHandler.ts
+│   ├── middlewares/
+│   │   ├── auth/
+│   │   └── validation/
+│   ├── utils/
+│   │   ├── auth.utils.ts
+│   │   └── query/
+│   │       ├── queryParser.ts
+│   │       ├── buildCustomFilters.ts
+│   ├── types/
+│       ├── global.d.ts
+├── core/
+│   ├── repositories/
+│   │   ├── base.repository.ts
+├── config/
+│   └── database.ts
+├── main.ts
+└── main-router.ts

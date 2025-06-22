@@ -1,4 +1,4 @@
-import { responseHandler } from '../../../core/handlers/ResponseHandler.mjs'
+import { responseHandler } from '../../shared/handlers/ResponseHandler.mjs'
 import {
     loginUser,
     logoutUser,

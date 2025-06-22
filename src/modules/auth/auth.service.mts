@@ -1,8 +1,8 @@
 import RefreshTokenModel from './refreshToken.model.mjs'
 import { JwtPayload } from 'jsonwebtoken'
-import { AuthUtils } from '../../../core/classes/AuthUtils.class.mjs'
-import { ApiError } from '../../../core/classes/ApiError.class.mjs'
-import { dispatchError } from '../../../core/handlers/ErrorHandler.mjs'
+import { AuthUtils } from '../../core/classes/AuthUtils.class.mjs'
+import { ApiError } from '../../core/classes/ApiError.class.mjs'
+import { dispatchError } from '../../shared/handlers/ErrorHandler.mjs'
 import { userRepository } from '../user/user.repository.mjs'
 import {
     AuthLoginSchema,
@@ -16,7 +16,7 @@ import {
     SIGNUP_DUPLICATE,
     SIGNUP_ERROR,
     USER_NOT_FOUND
-} from '../../../core/constants/errors.mjs'
+} from '../../core/constants/errors.mjs'
 
 const createTokens = async (userId: string, role: string) => {
     try {

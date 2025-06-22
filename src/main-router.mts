@@ -1,9 +1,9 @@
 import express from 'express'
 
-import authRouter from './apis/users-api/auth/auth.routes.mjs'
-import usersApi from './apis/users-api/user/user.routes.mjs'
-// import avatarApi from './apis/avatar-api/index.mjs'
-// import disneyApi from './apis/disney-api/index.mjs'
+import authRouter from './modules/auth/auth.routes.mjs'
+import usersApi from './modules/user/user.routes.mjs'
+// import avatarApi from './modules/avatar-api/index.mjs'
+// import disneyApi from './modules/disney-api/index.mjs'
 
 const router = express.Router()
 

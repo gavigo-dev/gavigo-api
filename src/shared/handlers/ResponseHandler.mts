@@ -1,5 +1,5 @@
-import { INTERNAL_ERROR } from '../constants/errors.mjs'
-import { ApiError } from '../classes/ApiError.class.mjs'
+import { INTERNAL_ERROR } from '../../core/constants/errors.mjs'
+import { ApiError } from '../../core/classes/ApiError.class.mjs'
 import { dispatchError } from './ErrorHandler.mjs'
 import { ResponseHandler } from './types/ResponseHandlerTypes'
 

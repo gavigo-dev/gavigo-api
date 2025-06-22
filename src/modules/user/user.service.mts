@@ -1,4 +1,4 @@
-import { parseQueryOptions } from '../../../core/repositories/utils/queryParser.mjs'
+import { parseQueryOptions } from '../../shared/utils/queryParser.mjs'
 import { userRepository } from './user.repository.mjs'
 
 export const findUsers = async (query: unknown) => {
