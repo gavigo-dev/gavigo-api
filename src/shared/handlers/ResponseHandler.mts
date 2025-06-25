@@ -15,7 +15,10 @@ export const responseHandler: ResponseHandler.Instance =
             const callbackReturn = await callback(providers)
 
             const status = callbackReturn?.status || 200
-            const json = callbackReturn?.data || null
+            const json = {
+                success: true,
+                data: callbackReturn?.data
+            }
 
             res.status(status).json(json)
         } catch (err) {
@@ -23,6 +26,10 @@ export const responseHandler: ResponseHandler.Instance =
             const error =
                 err instanceof ApiError ? err : new ApiError(INTERNAL_ERROR)
 
-            res.status(error.status).json(error.toDTO())
+            const resp = {
+                success: false,
+                error: error.toDTO()
+            }
+            res.status(error.status).json(resp)
         }
     }

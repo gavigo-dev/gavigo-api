@@ -18,7 +18,7 @@ import {
     USER_NOT_FOUND
 } from '../../core/constants/errors.mjs'
 
-const createTokens = async (userId: string, role: string) => {
+const createTokens = async (userId: string, role: string = 'user') => {
     try {
         const accessToken = AuthUtils.generateAccessToken({ userId, role })
         const refreshToken = AuthUtils.generateRefreshToken({ userId, role })
@@ -44,7 +44,7 @@ export const signupUser = async (data: unknown) => {
             salt,
             password: hash
         })
-
+        if (!user) return dispatchError(SIGNUP_ERROR)
         return await createTokens(user._id, user.role)
     } catch (error) {
         console.log(error)

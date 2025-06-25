@@ -24,6 +24,10 @@ export const authorizeRoles =
             const error =
                 err instanceof ApiError ? err : new ApiError(INTERNAL_ERROR)
 
-            res.status(error.status).json(error.toDTO())
+            const resp = {
+                success: false,
+                error: error.toDTO()
+            }
+            res.status(error.status).json(resp)
         }
     }

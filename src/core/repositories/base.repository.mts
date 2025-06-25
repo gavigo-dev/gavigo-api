@@ -1,11 +1,9 @@
-// src/repositories/base.repository.ts
 import { Model, Document, UpdateQuery } from 'mongoose'
-import { ZodSchema } from 'zod'
 import { QueryOptions } from '../../shared/utils/queryParser.mjs'
 import { buildCustomFilters } from '../../shared/utils/buildCustomFilters.mjs'
 
 interface Paginated<T> {
-    data: T[]
+    items: T[]
     total: number
     page: number
     limit: number
@@ -20,15 +18,12 @@ export class BaseRepository<
 > {
     constructor(
         protected readonly model: Model<TModel>,
-        private toDTO: (doc: any) => TDto,
-        private createSchema: ZodSchema<TCreate>,
-        private updateSchema: ZodSchema<TUpdate>
+        private toDTO: (doc: any) => TDto
     ) {}
 
-    async create(data: unknown): Promise<TDto> {
-        const parsed = this.createSchema.parse(data)
-        const doc = await this.model.create(parsed)
-        return this.toDTO(doc.toObject())
+    async create(data: TCreate): Promise<TDto | null> {
+        const doc = await this.model.create(data)
+        return doc ? this.toDTO(doc.toObject()) : null
     }
 
     async findById(id: string): Promise<TDto | null> {
@@ -36,10 +31,9 @@ export class BaseRepository<
         return doc ? this.toDTO(doc) : null
     }
 
-    async update(id: string, data: unknown): Promise<TDto | null> {
-        const parsed = this.updateSchema.parse(data)
+    async update(id: string, data: TUpdate): Promise<TDto | null> {
         const doc = await this.model
-            .findByIdAndUpdate(id, parsed, {
+            .findByIdAndUpdate(id, data, {
                 new: true
             })
             .lean()
@@ -67,7 +61,7 @@ export class BaseRepository<
         ])
 
         return {
-            data: docs.map(this.toDTO),
+            items: docs.map(this.toDTO),
             total,
             page,
             limit,

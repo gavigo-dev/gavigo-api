@@ -19,10 +19,12 @@ export interface User {
 export interface UserDTO {
     _id: string
     email: string
-    role: UserRole
+    role?: UserRole
     name?: string
     phone?: string
     nickname?: string
+    createdAt?: Date
+    updatedAt?: Date
 }
 
 export interface UserCreate extends z.input<typeof UserCreateSchema> {}
@@ -35,6 +37,8 @@ export function toUserDTO(user: User): UserDTO {
         email: user.email,
         name: user.name,
         phone: user.phone,
-        nickname: user.nickname
+        nickname: user.nickname,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
     }
 }

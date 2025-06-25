@@ -21,7 +21,7 @@ export namespace ResponseHandler {
 
     export type Callback = (
         providers: Providers
-    ) => Promise<CallbackReturn | undefined>
+    ) => Promise<CallbackReturn | void>
 
     export type CallbackReturn = {
         status?: number

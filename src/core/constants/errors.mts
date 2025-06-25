@@ -67,3 +67,11 @@ export const LANGUAGE_NOT_PROVIDED: ErrorDataConstant = {
     message: 'No language provided',
     status: 400
 }
+
+// USERS
+
+export const OPERATION_NOT_ALLOWED: ErrorDataConstant = {
+    code: 'OPERATION_NOT_ALLOWED',
+    message: 'Operation not allowed',
+    status: 400
+}

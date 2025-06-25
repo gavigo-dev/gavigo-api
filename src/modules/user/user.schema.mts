@@ -11,8 +11,16 @@ export const UserCreateSchema = z.object({
 })
 
 export const UserUpdateSchema = z.object({
-    email: z.string().email(),
+    email: z.string().email().optional(),
     name: z.string().optional(),
     phone: z.string().optional(),
     nickname: z.string().optional()
+})
+
+export const UserFindByIdSchema = z.object({
+    id: z.string()
+})
+
+export const UserFindByEmailSchema = z.object({
+    email: z.string()
 })
