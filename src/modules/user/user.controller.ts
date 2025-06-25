@@ -1,11 +1,11 @@
-import { responseHandler } from '../../shared/handlers/ResponseHandler.mjs'
-import { parseQueryOptions } from '../../shared/utils/queryParser.mjs'
+import { responseHandler } from '@/shared/handlers/ResponseHandler'
+import { parseQueryOptions } from '@/shared/utils/queryParser'
 import {
     UserFindByEmailSchema,
     UserFindByIdSchema,
     UserUpdateSchema
-} from './user.schema.mjs'
-import * as service from './user.service.mjs'
+} from './user.schema'
+import * as service from './user.service'
 
 export const find = responseHandler(async ({ req }) => {
     const query = parseQueryOptions(req.query)

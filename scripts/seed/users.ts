@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { fakerPT_BR as faker } from '@faker-js/faker'
-import { signupUser } from '../../src/modules/auth/auth.service.mjs'
+import { signupUser } from '../../src/modules/auth/auth.service.js'
 
 faker.seed(123) // para resultados reproduzíveis
 

@@ -2,7 +2,7 @@ import {
     ErrorData,
     ErrorDataConstant,
     ErrorDTO
-} from '../../shared/handlers/types/ErrorTypes'
+} from '@/shared/handlers/types/ErrorTypes'
 
 export class ApiError extends Error implements ErrorData {
     public code

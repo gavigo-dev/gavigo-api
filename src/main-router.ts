@@ -1,7 +1,7 @@
 import express from 'express'
 
-import authRouter from './modules/auth/auth.routes.mjs'
-import usersApi from './modules/user/user.routes.mjs'
+import authRouter from './modules/auth/auth.routes'
+import usersApi from './modules/user/user.routes'
 // import avatarApi from './modules/avatar-api/index.mjs'
 // import disneyApi from './modules/disney-api/index.mjs'
 

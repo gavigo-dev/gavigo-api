@@ -1,6 +1,6 @@
-import { INTERNAL_ERROR } from '../../core/constants/errors.mjs'
-import { ApiError } from '../../core/classes/ApiError.class.mjs'
-import { dispatchError } from './ErrorHandler.mjs'
+import { INTERNAL_ERROR } from '@/core/constants/errors'
+import { ApiError } from '@/core/classes/ApiError.class'
+import { dispatchError } from './ErrorHandler'
 import { ResponseHandler } from './types/ResponseHandlerTypes'
 
 export const responseHandler: ResponseHandler.Instance =

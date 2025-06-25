@@ -1,6 +1,6 @@
-import { BaseRepository } from '../../core/repositories/base.repository.mjs'
-import UserModel from './user.model.mjs'
-import { toUserDTO, UserCreate, UserDTO, UserUpdate } from './user.entity.mjs'
+import { BaseRepository } from '@/core/repositories/base.repository'
+import UserModel from './user.model'
+import { toUserDTO, UserCreate, UserDTO, UserUpdate } from './user.entity'
 
 class UserRepository extends BaseRepository<
     (typeof UserModel)['prototype'],

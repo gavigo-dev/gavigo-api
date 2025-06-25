@@ -1,10 +1,10 @@
-import { responseHandler } from '../../shared/handlers/ResponseHandler.mjs'
+import { responseHandler } from '@/shared/handlers/ResponseHandler'
 import {
     loginUser,
     logoutUser,
     refreshAccessToken,
     signupUser
-} from './auth.service.mjs'
+} from './auth.service'
 
 export const signup = responseHandler(async ({ req }) => {
     const data = await signupUser(req.body)

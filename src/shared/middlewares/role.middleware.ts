@@ -1,11 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
-import { UserRole } from '../../modules/user/user.entity.mjs'
-import { dispatchError } from '../handlers/ErrorHandler.mjs'
-import {
-    INTERNAL_ERROR,
-    USER_ROLE_ANAUTHORIZED
-} from '../../core/constants/errors.mjs'
-import { ApiError } from '../../core/classes/ApiError.class.mjs'
+import { UserRole } from '@/modules/user/user.entity'
+import { dispatchError } from '@/shared/handlers/ErrorHandler'
+import { INTERNAL_ERROR, USER_ROLE_ANAUTHORIZED } from '@/core/constants/errors'
+import { ApiError } from '@/core/classes/ApiError.class'
 
 export const authorizeRoles =
     (...allowedRoles: UserRole[]) =>

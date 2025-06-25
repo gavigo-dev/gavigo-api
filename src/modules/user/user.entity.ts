@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { UserCreateSchema, UserUpdateSchema } from './user.schema.mjs'
+import { UserCreateSchema, UserUpdateSchema } from './user.schema'
 
 export type UserRole = 'user' | 'admin' | 'moderator'
 

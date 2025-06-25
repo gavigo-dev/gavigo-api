@@ -1,5 +1,5 @@
 import { Model, Query } from 'mongoose'
-import { QueryOptions } from './queryParser.mjs'
+import { QueryOptions } from './queryParser'
 
 export interface BuildQueryResult<T> {
     query: Query<T[], T> // Mongoose query object

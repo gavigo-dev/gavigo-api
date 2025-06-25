@@ -1,6 +1,6 @@
 import { Model, Document, UpdateQuery } from 'mongoose'
-import { QueryOptions } from '../../shared/utils/queryParser.mjs'
-import { buildCustomFilters } from '../../shared/utils/buildCustomFilters.mjs'
+import { QueryOptions } from '@/shared/utils/queryParser'
+import { buildCustomFilters } from '@/shared/utils/buildCustomFilters'
 
 interface Paginated<T> {
     items: T[]

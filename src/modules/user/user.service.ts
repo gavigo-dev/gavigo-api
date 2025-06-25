@@ -1,8 +1,8 @@
-import { OPERATION_NOT_ALLOWED } from '../../core/constants/errors.mjs'
-import { dispatchError } from '../../shared/handlers/ErrorHandler.mjs'
-import { QueryOptions } from '../../shared/utils/queryParser.mjs'
-import { UserCreate, UserUpdate } from './user.entity.mjs'
-import { userRepository } from './user.repository.mjs'
+import { OPERATION_NOT_ALLOWED } from '@/core/constants/errors'
+import { dispatchError } from '@/shared/handlers/ErrorHandler'
+import { QueryOptions } from '@/shared/utils/queryParser'
+import { UserCreate, UserUpdate } from './user.entity'
+import { userRepository } from './user.repository'
 
 export const createUser = async (body: UserCreate) => {
     const user = await userRepository.create(body)

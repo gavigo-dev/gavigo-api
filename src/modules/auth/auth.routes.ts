@@ -1,6 +1,6 @@
 import express from 'express'
-import * as controller from './auth.controller.mjs'
-import { requireAuth } from '../../shared/middlewares/auth.middleware.mjs'
+import * as controller from './auth.controller'
+import { requireAuth } from '@/shared/middlewares/auth.middleware'
 
 const router = express.Router()
 
