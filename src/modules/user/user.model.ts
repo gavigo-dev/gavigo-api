@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import dbConfig from '@/config/databse'
+import dbConfig from '@/config/database'
 
 const schema = new mongoose.Schema(
     {
