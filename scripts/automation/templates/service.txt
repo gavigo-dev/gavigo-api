@@ -1,0 +1,30 @@
+import { OPERATION_NOT_ALLOWED } from '@/core/constants/errors'
+import { dispatchError } from '@/shared/handlers/ErrorHandler'
+import { QueryOptions } from '@/shared/utils/queryParser'
+import { {{entity}}Create, {{entity}}Update } from './{{entityMini}}.entity'
+import { {{entityMini}}Repository } from './{{entityMini}}.repository'
+
+export const create{{entity}} = async (body: {{entity}}Create) => {
+    const {{entityMini}} = await {{entityMini}}Repository.create(body)
+    return {{entityMini}}
+}
+
+export const find{{entityPlural}} = async (options: QueryOptions) => {
+    const {{entityMiniPlural}} = await {{entityMini}}Repository.readAll({}, options)
+    return { {{entityMiniPlural}} }
+}
+
+export const findById = async (id: string) => {
+    const {{entityMini}} = await {{entityMini}}Repository.findById(id)
+    return {{entityMini}}
+}
+
+export const update{{entity}} = async (id: string, body: {{entity}}Update) => {
+    await {{entityMini}}Repository.update(id, body)
+}
+
+export const delete{{entity}} = async (id: string, authorId: string) => {
+    const allowed = authorId !== id
+    if (!allowed) dispatchError(OPERATION_NOT_ALLOWED)
+    await {{entityMini}}Repository.delete(id)
+}

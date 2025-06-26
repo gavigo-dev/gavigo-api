@@ -1,0 +1,43 @@
+import express from 'express'
+import * as controller from './{{entityMini}}.controller'
+import { authorizeRoles } from '@/shared/middlewares/role.middleware'
+import { requireAuth } from '@/shared/middlewares/auth.middleware'
+
+const router = express.Router()
+
+router.get(
+    '/',
+    requireAuth,
+    authorizeRoles('admin', 'moderator'),
+    controller.find
+)
+
+router.get(
+    '/findById/:id',
+    requireAuth,
+    authorizeRoles('admin', 'moderator'),
+    controller.findById
+)
+
+router.post(
+    '/create',
+    requireAuth,
+    authorizeRoles('admin', 'moderator'),
+    controller.create
+)
+
+router.put(
+    '/update/:id',
+    requireAuth,
+    authorizeRoles('admin', 'moderator'),
+    controller.update
+)
+
+router.delete(
+    '/delete/:id',
+    requireAuth,
+    authorizeRoles('admin', 'moderator'),
+    controller.delete{{entity}}
+)
+
+export default router

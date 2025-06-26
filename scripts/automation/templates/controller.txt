@@ -1,0 +1,38 @@
+import { responseHandler } from '@/shared/handlers/ResponseHandler'
+import { parseQueryOptions } from '@/shared/utils/queryParser'
+import {
+    {{entity}}FindByIdSchema,
+    {{entity}}UpdateSchema,
+    {{entity}}CreateSchema,
+} from './{{entityMini}}.schema'
+import * as service from './{{entityMini}}.service'
+
+export const create = responseHandler(async ({ req }) => {
+    const {{entityMini}} = {{entity}}CreateSchema.parse(req.body)
+    const data = await service.create{{entity}}({{entityMini}})
+    return { data }
+})
+
+export const find = responseHandler(async ({ req }) => {
+    const query = parseQueryOptions(req.query)
+    const data = await service.find{{entityPlural}}(query)
+    return { data }
+})
+
+export const findById = responseHandler(async ({ req }) => {
+    const { id } = {{entity}}FindByIdSchema.parse(req.params)
+    const data = await service.findById(id)
+    return { data }
+})
+
+
+export const update = responseHandler(async ({ req }) => {
+    const { id } = {{entity}}FindByIdSchema.parse(req.params)
+    const {{entityMini}} = {{entity}}UpdateSchema.parse(req.body)
+    await service.update{{entity}}(id, {{entityMini}})
+})
+
+export const delete{{entity}} = responseHandler(async ({ req }) => {
+    const { id } = {{entity}}FindByIdSchema.parse(req.params)
+    await service.delete{{entity}}(id, req.user?.id)
+})
