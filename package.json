@@ -4,9 +4,9 @@
     "description": "",
     "type": "module",
     "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "start": "node dist/server.cjs",
+        "build:watch": "vite build --watch",
+        "run:watch": "nodemon dist/main.cjs --watch dist",
+        "dev": "npm-run-all --parallel build:watch run:watch",
         "net:dev": "netlify dev",
         "net:deploy": "netlify deploy",
         "test": ""
