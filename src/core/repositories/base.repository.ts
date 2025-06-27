@@ -18,8 +18,13 @@ export class BaseRepository<
 > {
     constructor(
         protected readonly model: Model<TModel>,
-        private toDTO: (doc: any) => TDto
+        protected toDTO: (doc: any) => TDto
     ) {}
+
+    async countItems() {
+        const n = await this.model.countDocuments()
+        return n
+    }
 
     async create(data: TCreate): Promise<TDto | null> {
         const doc = await this.model.create(data)

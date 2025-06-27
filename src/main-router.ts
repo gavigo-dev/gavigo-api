@@ -2,8 +2,8 @@ import express from 'express'
 
 import authRouter from './modules/auth/auth.routes'
 import usersApi from './modules/user/user.routes'
+import disneyApi from './modules/disneydle/movie/movie.routes'
 // import avatarApi from './modules/avatar-api/index.mjs'
-// import disneyApi from './modules/disney-api/index.mjs'
 
 const router = express.Router()
 
@@ -17,6 +17,6 @@ router.use('/users-api', usersApi)
 
 // router.use('/avatar-api', avatarApi)
 
-// router.use('/disney-api', disneyApi)
+router.use('/disney-api', disneyApi)
 
 export default router

@@ -4,6 +4,9 @@ declare global {
     namespace Express {
         interface Request {
             user?: UserDTO
+            lang?: string
         }
     }
+
+    type ValueTypes<T> = T[keyof T]
 }

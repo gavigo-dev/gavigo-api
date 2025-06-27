@@ -7,6 +7,24 @@ export const INTERNAL_ERROR: ErrorDataConstant = {
     status: 500
 }
 
+export const BAD_REQUEST: ErrorDataConstant = {
+    code: 'BAD_REQUEST',
+    message: 'Invalid request or parameters',
+    status: 400
+}
+
+export const UNPROCESSABLE_ENTITY: ErrorDataConstant = {
+    code: 'UNPROCESSABLE_ENTITY',
+    message: 'Unprocessable entity',
+    status: 422
+}
+
+export const ITEM_NOT_FOUND: ErrorDataConstant = {
+    code: 'ITEM_NOT_FOUND',
+    message: 'Item was not found',
+    status: 404
+}
+
 // auth
 export const NO_TOKEN_PROVIDED: ErrorDataConstant = {
     code: 'NO_TOKEN_PROVIDED',

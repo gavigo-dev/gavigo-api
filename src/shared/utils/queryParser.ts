@@ -29,9 +29,8 @@ export const QueryOptionsSchema = z.object({
         .transform((val) => (val ? val.split(',') : undefined))
 })
 
-export type QueryOptions = Omit<
-    z.infer<typeof QueryOptionsSchema>,
-    'search' | 'searchFields'
+export type QueryOptions = Partial<
+    Omit<z.infer<typeof QueryOptionsSchema>, 'search' | 'searchFields'>
 > & {
     search?: {
         fields: string[]
