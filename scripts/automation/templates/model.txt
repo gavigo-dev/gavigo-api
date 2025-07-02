@@ -1,9 +1,0 @@
-import mongoose from 'mongoose'
-import dbConfig from '@/config/databse'
-
-const schema = new mongoose.Schema({}, { timestamps: true })
-
-const conn = dbConfig.connect('{{db}}')
-const model = conn.model('{{entity}}', schema)
-
-export default model

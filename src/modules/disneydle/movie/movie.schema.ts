@@ -25,7 +25,8 @@ export const MovieUpdateSchema = z.object({
     decade: z.string().optional(),
     animation_style: z.string().optional(),
     box_office: z.string().optional(),
-    translations: translationSchema.partial()
+    emojis: z.string().length(4),
+    translations: translationSchema.partial().optional()
 })
 
 export const MovieFindByIdSchema = z.object({

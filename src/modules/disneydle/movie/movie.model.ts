@@ -20,6 +20,7 @@ const schema = new mongoose.Schema(
         decade: String,
         animation_style: String,
         box_office: String,
+        emojis: String,
         translations: {
             'pt-BR': translationSchema,
             'en-US': translationSchema

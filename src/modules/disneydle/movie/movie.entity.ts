@@ -16,6 +16,7 @@ export interface Movie {
     date: string
     decade: string
     animation_style: string
+    emojis: string
     box_office: string
     translations: {
         [lang: string]: TranslationData
@@ -33,6 +34,7 @@ export interface MovieDTO {
     date: string
     decade: string
     animation_style: string
+    emojis: string
     box_office: string
     translations?: {
         [lang: string]: TranslationData
@@ -50,6 +52,7 @@ export function toMovieDTO(movie: Movie): MovieDTO {
         date: movie.date,
         decade: movie.decade,
         animation_style: movie.animation_style,
+        emojis: movie.emojis,
         box_office: movie.box_office,
         translations: movie.translations,
         createdAt: movie.createdAt,
