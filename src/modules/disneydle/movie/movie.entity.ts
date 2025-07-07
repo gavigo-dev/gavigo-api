@@ -3,8 +3,6 @@ import { MovieCreateSchema, MovieUpdateSchema } from './movie.schema'
 
 export interface TranslationData {
     title: string
-    cover_image: string
-    cover_image_vertical: string
     main_characters: string[]
     main_character_types: string[]
     location: string
@@ -16,8 +14,10 @@ export interface Movie {
     date: string
     decade: string
     animation_style: string
-    emojis: string
     box_office: string
+    emojis: string
+    image_drive_id: String
+    image_url: String
     translations: {
         [lang: string]: TranslationData
     }
@@ -34,8 +34,10 @@ export interface MovieDTO {
     date: string
     decade: string
     animation_style: string
-    emojis: string
     box_office: string
+    emojis: string
+    image_drive_id: String
+    image_url: String
     translations?: {
         [lang: string]: TranslationData
     }
@@ -52,8 +54,10 @@ export function toMovieDTO(movie: Movie): MovieDTO {
         date: movie.date,
         decade: movie.decade,
         animation_style: movie.animation_style,
-        emojis: movie.emojis,
         box_office: movie.box_office,
+        emojis: movie.emojis,
+        image_drive_id: movie.image_drive_id,
+        image_url: movie.image_url,
         translations: movie.translations,
         createdAt: movie.createdAt,
         updatedAt: movie.updatedAt

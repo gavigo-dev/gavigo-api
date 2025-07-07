@@ -60,3 +60,9 @@ export const timeRemaining = responseHandler(async () => {
     const data = service.getRemainingTime()
     return { data }
 })
+
+export const uploadImage = responseHandler(async ({ req }) => {
+    const { id } = MovieFindByIdSchema.parse(req.params)
+    const data = await service.uploadImage(id, req.file)
+    return { data }
+})

@@ -16,6 +16,7 @@ import {
     LANGUAGE_NOT_PROVIDED,
     OPERATION_NOT_ALLOWED
 } from '@/core/constants/errors'
+import { GoogleUtils } from '@/core/classes/GoogleUtils'
 
 const guessStatus = {
     CORRECT: 'correct',
@@ -108,7 +109,7 @@ const compareMovies = (movie1: TranslatedMovie, movie2: TranslatedMovie) => {
 
     return {
         fields: result,
-        image: movie1.cover_image,
+        image: movie1.image_url,
         correct: isCorrect
     }
 }
@@ -180,4 +181,30 @@ export const getRemainingTime = () => {
         remainingMinutes,
         serverTime
     }
+}
+
+export const uploadImage = async (
+    movieId: string,
+    file?: Express.Multer.File
+) => {
+    if (!file) return dispatchError(BAD_REQUEST)
+
+    const { path, originalname, mimetype } = file
+
+    const { fileId, webContentLink } = await GoogleUtils.Drive.upload(
+        path,
+        originalname,
+        mimetype
+    )
+
+    await movieRepository.update(movieId, {
+        image_drive_id: fileId,
+        image_url: webContentLink
+    })
+
+    return path
+}
+
+export const listImages = async (folderId: string) => {
+    return await GoogleUtils.Drive.list(folderId)
 }

@@ -4,8 +4,6 @@ import { z } from 'zod'
 
 const translationSchema = z.object({
     title: z.string(),
-    cover_image: z.string(),
-    cover_image_vertical: z.string(),
     main_characters: z.array(z.string()),
     main_character_types: z.array(z.string()),
     location: z.string(),
@@ -25,8 +23,12 @@ export const MovieUpdateSchema = z.object({
     decade: z.string().optional(),
     animation_style: z.string().optional(),
     box_office: z.string().optional(),
-    emojis: z.string().length(4),
-    translations: translationSchema.partial().optional()
+    emojis: z.string().length(4).optional(),
+    image_drive_id: z.string().optional(),
+    image_url: z.string().optional(),
+    translations: z
+        .record(z.string(), translationSchema.partial().optional())
+        .optional()
 })
 
 export const MovieFindByIdSchema = z.object({

@@ -3,6 +3,7 @@ import * as controller from './movie.controller'
 import { authorizeRoles } from '@/shared/middlewares/role.middleware'
 import { requireAuth } from '@/shared/middlewares/auth.middleware'
 import { requireLang } from '@/shared/middlewares/lang.middleware'
+import { upload } from '@/shared/middlewares/upload.middleware'
 
 const router = express.Router()
 
@@ -38,5 +39,13 @@ router.get('/movieOfDay', requireLang, controller.movieOfDay)
 router.get('/timeRemaining', requireLang, controller.timeRemaining)
 
 router.post('/guess', requireLang, controller.guessMovie)
+
+router.post(
+    '/uploadImage/:id',
+    requireAuth,
+    authorizeRoles('admin', 'moderator'),
+    upload.single('file'),
+    controller.uploadImage
+)
 
 export default router
