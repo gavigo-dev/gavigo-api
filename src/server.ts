@@ -9,6 +9,8 @@ app.use(cors())
 app.use(express.json())
 app.use(mainRouter)
 
+app.use(express.static('public'))
+
 // Global error handler (should be the LAST middleware)
 app.use(errorHandler)
 
