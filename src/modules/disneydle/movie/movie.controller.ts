@@ -8,6 +8,7 @@ import {
     MovieOfDaySchema
 } from './movie.schema'
 import * as service from './movie.service'
+import fileUpload from 'express-fileupload'
 
 export const create = responseHandler(async ({ req }) => {
     const movie = MovieCreateSchema.parse(req.body)
@@ -63,6 +64,7 @@ export const timeRemaining = responseHandler(async () => {
 
 export const uploadImage = responseHandler(async ({ req }) => {
     const { id } = MovieFindByIdSchema.parse(req.params)
-    const data = await service.uploadImage(id, req.file)
+    const file = req.files?.file as fileUpload.UploadedFile
+    const data = await service.uploadImage(id, file)
     return { data }
 })

@@ -2,6 +2,7 @@ import { google, drive_v3 } from 'googleapis'
 import { GoogleAuth, JWT } from 'google-auth-library'
 import dotenv from 'dotenv'
 import fs from 'fs'
+import { Readable } from 'stream'
 
 dotenv.config()
 
@@ -121,6 +122,57 @@ export class GoogleUtils {
         static async remove(fileId: string): Promise<void> {
             const drive = await this.getDrive()
             await drive.files.delete({ fileId })
+        }
+
+        static async uploadBuffer(
+            buffer: Buffer,
+            fileName: string,
+            mimeType: string,
+            folderId?: string
+        ): Promise<{
+            fileId: string
+            name: string
+            webViewLink: string
+            webContentLink: string
+        }> {
+            const drive = await this.getDrive()
+
+            const metadata: drive_v3.Schema$File = { name: fileName }
+            if (folderId) metadata.parents = [folderId]
+
+            const media = {
+                mimeType,
+                body: Buffer.isBuffer(buffer)
+                    ? Readable.from(buffer)
+                    : (buffer as unknown as NodeJS.ReadableStream)
+            }
+
+            const res = await drive.files.create({
+                requestBody: metadata,
+                media,
+                fields: 'id, name'
+            })
+
+            const fileId = res.data.id!
+            await drive.permissions.create({
+                fileId,
+                requestBody: {
+                    role: 'reader',
+                    type: 'anyone'
+                }
+            })
+
+            const { data } = await drive.files.get({
+                fileId,
+                fields: 'webViewLink, webContentLink'
+            })
+
+            return {
+                fileId,
+                name: res.data.name!,
+                webViewLink: data.webViewLink!,
+                webContentLink: data.webContentLink!
+            }
         }
     }
 }

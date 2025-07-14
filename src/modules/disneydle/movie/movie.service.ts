@@ -1,5 +1,6 @@
 import moment, { Moment } from 'moment'
 import seedrandom from 'seedrandom'
+import fileUpload from 'express-fileupload'
 import { dispatchError } from '@/shared/handlers/ErrorHandler'
 import { QueryOptions } from '@/shared/utils/queryParser'
 import {
@@ -185,16 +186,16 @@ export const getRemainingTime = () => {
 
 export const uploadImage = async (
     movieId: string,
-    file?: Express.Multer.File
+    file?: fileUpload.UploadedFile
 ) => {
     if (!file) return dispatchError(BAD_REQUEST)
 
-    const { path, originalname, mimetype } = file
+    const buffer = file.data
 
-    const { fileId, webContentLink } = await GoogleUtils.Drive.upload(
-        path,
-        originalname,
-        mimetype
+    const { fileId, webContentLink } = await GoogleUtils.Drive.uploadBuffer(
+        buffer,
+        file.name,
+        file.mimetype
     )
 
     await movieRepository.update(movieId, {
@@ -202,7 +203,7 @@ export const uploadImage = async (
         image_url: webContentLink
     })
 
-    return path
+    return fileId
 }
 
 export const listImages = async (folderId: string) => {
