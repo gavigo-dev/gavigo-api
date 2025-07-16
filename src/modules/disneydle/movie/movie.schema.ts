@@ -4,6 +4,7 @@ import { z } from 'zod'
 
 const translationSchema = z.object({
     title: z.string(),
+    cover_image: z.string(),
     main_characters: z.array(z.string()),
     main_character_types: z.array(z.string()),
     location: z.string(),

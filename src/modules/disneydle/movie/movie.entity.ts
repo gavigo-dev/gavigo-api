@@ -3,6 +3,7 @@ import { MovieCreateSchema, MovieUpdateSchema } from './movie.schema'
 
 export interface TranslationData {
     title: string
+    cover_image: string
     main_characters: string[]
     main_character_types: string[]
     location: string

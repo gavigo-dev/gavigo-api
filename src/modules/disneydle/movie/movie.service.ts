@@ -110,7 +110,7 @@ const compareMovies = (movie1: TranslatedMovie, movie2: TranslatedMovie) => {
 
     return {
         fields: result,
-        image: movie1.image_url,
+        image: movie1.cover_image,
         correct: isCorrect
     }
 }
@@ -160,7 +160,7 @@ export const guessMovie = async (guessId: string, translation?: string) => {
     const guess = await movieRepository.findById(guessId)
     if (!guess) return dispatchError(ITEM_NOT_FOUND)
 
-    const movie1 = translateMovie(guess)
+    const movie1 = translateMovie(guess, translation)
     const movie2 = await getMovieOfDay(moment(), translation)
 
     const data = compareMovies(movie1, movie2)

@@ -4,6 +4,7 @@ import dbConfig from '@/config/database'
 const translationSchema = new mongoose.Schema(
     {
         title: String,
+        cover_image: String,
         main_characters: [String],
         main_character_types: [String],
         location: String,
