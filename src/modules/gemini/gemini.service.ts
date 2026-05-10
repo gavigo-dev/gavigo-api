@@ -50,3 +50,20 @@ export const countTokens = async (data: unknown) => {
         dispatchError(BAD_REQUEST)
     }
 }
+
+export const listModels = async () => {
+    try {
+        if (!genAI) setApi()
+
+        const response = await genAI.models.list()
+
+        const list = response.page.map((model) => {
+            const split = model.name?.split('/') || []
+            return split.at(-1)
+        })
+
+        return list
+    } catch (error) {
+        dispatchError(BAD_REQUEST)
+    }
+}
