@@ -11,6 +11,12 @@ router.get(
 )
 
 router.get(
+    '/autocomplete',
+    requireAuth,
+    controller.autocomplete
+)
+
+router.get(
     '/findById/:id',
     requireAuth,
     controller.findById

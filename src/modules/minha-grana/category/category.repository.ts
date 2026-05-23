@@ -15,6 +15,42 @@ class CategoryRepository extends BaseRepository<
     async findByName(name: string, userId: string) {
         return this.model.findOne({ name, userId }).exec()
     }
+
+    async autocomplete(text: string, userId: string) {
+        const categories = await this.model
+            .aggregate()
+            .search({
+                index: 'minha-grana-api-category',
+                compound: {
+                    must: [
+                        {
+                            autocomplete: {
+                                query: text,
+                                path: 'name',
+                                tokenOrder: 'sequential'
+                            }
+                        }
+                    ],
+                    filter: [
+                        {
+                            equals: {
+                                path: 'userId',
+                                value: userId
+                            }
+                        }
+                    ]
+                }
+            })
+            .project({
+                name: 1,
+                score: { $meta: 'searchScore' }
+            })
+            .sort({ score: -1 })
+            .limit(5)
+            .project({ score: 0 })
+
+        return categories
+    }
 }
 
 export const categoryRepository = new CategoryRepository()

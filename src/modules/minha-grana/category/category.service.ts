@@ -47,6 +47,12 @@ export const updateCategory = async (id: string, body: CategoryUpdate, userId: s
     }
 }
 
+export const autocompleteCategories = async (text: string, userId: string) => {
+    if (!text) return []
+    const categories = await categoryRepository.autocomplete(text, userId)
+    return categories
+}
+
 export const deleteCategory = async (id: string, userId: string) => {
     const category = await categoryRepository.findById(id)
     if (!category) {
