@@ -16,3 +16,7 @@ export const CategoryFindByNameSchema = z.object({
     name: z.string()
 })
 
+export const CategoryAutocompleteSchema = z.object({
+    text: z.string()
+})
+
