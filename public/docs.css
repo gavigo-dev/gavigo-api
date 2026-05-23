@@ -1,0 +1,629 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --primary: #6D7FC4;
+    --primary-dark: #5568a8;
+    --primary-light: #8b9ad4;
+    --primary-subtle: rgba(109, 127, 196, 0.12);
+    --primary-glow: rgba(109, 127, 196, 0.25);
+
+    --bg: #f4f5f9;
+    --bg-gradient: linear-gradient(160deg, #eef0f8 0%, #f8f9fc 45%, #f4f5f9 100%);
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --text: #1a1d2e;
+    --text-secondary: #5c6178;
+    --border: #e2e5ef;
+    --border-strong: #cdd2e0;
+
+    --shadow-sm: 0 1px 2px rgba(26, 29, 46, 0.04);
+    --shadow-md: 0 4px 16px rgba(26, 29, 46, 0.06), 0 1px 3px rgba(26, 29, 46, 0.04);
+    --shadow-lg: 0 12px 40px rgba(109, 127, 196, 0.12), 0 4px 12px rgba(26, 29, 46, 0.06);
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+
+    --code-bg: #1e2235;
+    --code-text: #e8eaf4;
+    --inline-code-bg: var(--primary-subtle);
+
+    --method-get: #3b82f6;
+    --method-post: #22c55e;
+    --method-put: #f59e0b;
+    --method-delete: #ef4444;
+
+    --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+    background-image: var(--bg-gradient);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--primary-dark);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+a:hover {
+    color: var(--primary);
+}
+
+a:visited {
+    color: var(--primary-dark);
+}
+
+/* ── Header ── */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0.85rem 1.5rem;
+}
+
+.site-brand {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.site-logo {
+    display: block;
+    height: 2.25rem;
+    width: auto;
+    object-fit: contain;
+}
+
+.site-tagline {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    border-left: 1px solid var(--border);
+    padding-left: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .site-header__inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 1rem 1.25rem;
+    }
+
+    .site-tagline {
+        border-left: none;
+        padding-left: 0;
+    }
+}
+
+/* ── Layout ── */
+
+.layout {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr) 16rem;
+    gap: 1.75rem;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+@media (max-width: 1024px) {
+    .layout {
+        grid-template-columns: 1fr;
+        padding: 1.5rem 1.25rem 3rem;
+    }
+
+    .toc,
+    .infobox {
+        order: -1;
+    }
+}
+
+/* ── Table of contents ── */
+
+.toc {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.15rem;
+    font-size: 0.8125rem;
+    box-shadow: var(--shadow-md);
+}
+
+.toc h2 {
+    margin: 0 0 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.toc ol {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.toc > ol > li {
+    margin: 0;
+}
+
+.toc li {
+    margin: 0.15rem 0;
+}
+
+.toc ol ol {
+    padding-left: 0.85rem;
+    margin-top: 0.15rem;
+    border-left: 2px solid var(--primary-subtle);
+}
+
+.toc a {
+    display: block;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.toc a:hover {
+    background: var(--primary-subtle);
+    color: var(--primary-dark);
+    text-decoration: none;
+}
+
+/* ── Main article ── */
+
+main article {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 2.25rem 2.5rem 2.75rem;
+    box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 640px) {
+    main article {
+        padding: 1.5rem 1.25rem 2rem;
+        border-radius: var(--radius-lg);
+    }
+}
+
+main h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-subtle);
+    position: relative;
+}
+
+main h1::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 4rem;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 1px;
+}
+
+main h2 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin: 2.5rem 0 0.85rem;
+    padding-top: 0.5rem;
+    scroll-margin-top: 5rem;
+}
+
+main h2 code {
+    font-size: 0.75em;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+main h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 1.75rem 0 0.6rem;
+}
+
+main h3 code {
+    font-size: 0.8em;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+main p,
+main ul,
+main dl {
+    margin: 0.5rem 0 1rem;
+    color: var(--text-secondary);
+}
+
+main strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+main ul {
+    padding-left: 1.35rem;
+}
+
+main dl dt {
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 0.75rem;
+}
+
+main dl dd {
+    margin: 0.25rem 0 0.5rem;
+    color: var(--text-secondary);
+}
+
+/* ── Infobox (sidebar card) ── */
+
+.infobox {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-size: 0.8125rem;
+    box-shadow: var(--shadow-md);
+}
+
+.infobox caption {
+    display: block;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: #fff;
+    text-align: center;
+}
+
+.infobox table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.infobox th,
+.infobox td {
+    padding: 0.55rem 0.85rem;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.infobox th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-secondary);
+    width: 36%;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.infobox td {
+    color: var(--text);
+}
+
+.infobox a {
+    font-weight: 500;
+}
+
+.infobox code {
+    font-size: 0.78rem;
+}
+
+/* ── Endpoint tables ── */
+
+.endpoint-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+    margin: 1rem 0 1.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.endpoint-table thead {
+    background: linear-gradient(180deg, var(--primary-subtle) 0%, rgba(109, 127, 196, 0.06) 100%);
+}
+
+.endpoint-table th,
+.endpoint-table td {
+    padding: 0.65rem 0.85rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+}
+
+.endpoint-table tr:last-child td {
+    border-bottom: none;
+}
+
+.endpoint-table tbody tr {
+    transition: background 0.12s ease;
+}
+
+.endpoint-table tbody tr:hover {
+    background: var(--primary-subtle);
+}
+
+.endpoint-table th {
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+.endpoint-table td {
+    color: var(--text-secondary);
+}
+
+.endpoint-table code {
+    font-size: 0.8rem;
+    word-break: break-all;
+}
+
+/* ── HTTP method badges ── */
+
+.method {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    min-width: 3.25rem;
+    text-align: center;
+}
+
+.method-get { background: var(--method-get); }
+.method-post { background: var(--method-post); }
+.method-put { background: var(--method-put); }
+.method-delete { background: var(--method-delete); }
+
+/* ── Access badges ── */
+
+.badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+}
+
+.badge-auth {
+    color: #b91c1c;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.badge-lang {
+    color: var(--primary-dark);
+    background: var(--primary-subtle);
+    border-color: rgba(109, 127, 196, 0.3);
+}
+
+.badge-role {
+    color: #92400e;
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+/* ── Code blocks ── */
+
+pre {
+    background: var(--code-bg);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    margin: 0.85rem 0 1.5rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    color: var(--code-text);
+}
+
+code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--inline-code-bg);
+    color: var(--primary-dark);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+}
+
+pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-weight: 400;
+}
+
+/* ── Callout note ── */
+
+.note {
+    background: var(--primary-subtle);
+    border: 1px solid rgba(109, 127, 196, 0.2);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 0.85rem 1.15rem;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.note strong {
+    color: var(--text);
+}
+
+/* ── Footer ── */
+
+.site-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.site-footer code {
+    font-size: 0.85em;
+}
+
+/* ── Request payload docs ── */
+
+.payload-section {
+    margin: 1.75rem 0 2.25rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.payload-section > h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 1.25rem;
+    color: var(--text);
+}
+
+.payload-block {
+    margin-bottom: 2rem;
+}
+
+.payload-block h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+    color: var(--text);
+}
+
+.payload-block h4 code {
+    font-size: 0.9em;
+    color: var(--primary-dark);
+}
+
+.payload-intro {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.payload-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.8125rem;
+    margin: 0 0 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.payload-table th,
+.payload-table td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+}
+
+.payload-table tr:last-child td {
+    border-bottom: none;
+}
+
+.payload-table thead {
+    background: var(--primary-subtle);
+}
+
+.payload-table th {
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+.payload-table td {
+    color: var(--text-secondary);
+}
+
+.payload-table td:first-child code {
+    white-space: nowrap;
+}
+
+.payload-table .req-yes {
+    color: #15803d;
+    font-weight: 600;
+}
+
+.payload-table .req-no {
+    color: var(--text-secondary);
+}
+
+.payload-example {
+    margin: 0;
+}

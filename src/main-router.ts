@@ -1,3 +1,4 @@
+import path from 'path'
 import express from 'express'
 
 import authRouter from './modules/auth/auth.routes'
@@ -10,7 +11,7 @@ import minhaGranaApi from './modules/minha-grana/index.routes'
 const router = express.Router()
 
 router.get('/', (_req, res) => {
-    res.json({ message: 'Gavito API' })
+    res.sendFile(path.join(process.cwd(), 'public', 'index.html'))
 })
 
 router.use('/auth', authRouter)

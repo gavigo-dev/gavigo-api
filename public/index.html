@@ -1,13 +1,883 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gavito API</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gavigo API — Documentation</title>
+    <link rel="stylesheet" href="/docs.css">
 </head>
 <body>
-    <div>
-      <h1>Gavito API</h1>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="/" class="site-brand" aria-label="Gavigo home">
+                <img src="/logo-wide.png" alt="Gavigo" class="site-logo" width="160" height="36" />
+            </a>
+            <p class="site-tagline">REST API documentation — multi-module backend for auth, users, Disneydle, Gemini, and Minha Grana.</p>
+        </div>
+    </header>
+
+    <div class="layout">
+        <nav class="toc" aria-label="Table of contents">
+            <h2>Contents</h2>
+            <ol>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#responses">Responses</a></li>
+                <li><a href="#authentication">Authentication</a></li>
+                <li><a href="#auth-module">Auth</a></li>
+                <li><a href="#users-module">Users API</a></li>
+                <li><a href="#disney-module">Disney API</a></li>
+                <li><a href="#gemini-module">Gemini</a></li>
+                <li><a href="#minha-grana-module">Minha Grana API</a>
+                    <ol>
+                        <li><a href="#categories">Categories</a></li>
+                        <li><a href="#transactions">Transactions</a></li>
+                        <li><a href="#billing">Billing</a></li>
+                    </ol>
+                </li>
+            </ol>
+        </nav>
+
+        <main>
+            <article>
+                <h1 id="overview">Gavigo API</h1>
+                <p>
+                    <strong>Gavigo API</strong> is a Node.js / Express backend that groups several product APIs
+                    under one server. All JSON endpoints return a consistent envelope; protected routes require
+                    a JWT in the <code>Authorization</code> header.
+                </p>
+
+                <h2 id="responses">Response format</h2>
+                <p>Successful responses use HTTP <code>2xx</code> with:</p>
+                <pre><code>{
+  "success": true,
+  "data": { ... }
+}</code></pre>
+                <p>Errors use HTTP <code>4xx</code> / <code>5xx</code> with:</p>
+                <pre><code>{
+  "success": false,
+  "error": {
+    "code": "...",
+    "message": "...",
+    "status": 400
+  }
+}</code></pre>
+
+                <h2 id="authentication">Authentication &amp; headers</h2>
+                <dl>
+                    <dt><code>Authorization</code></dt>
+                    <dd><code>Bearer &lt;access_token&gt;</code> — required on routes marked <span class="badge badge-auth">auth</span>.</dd>
+                    <dt><code>Accept-Language</code> / <code>?lang=</code></dt>
+                    <dd>Disney API routes accept <code>en-US</code> or <code>pt-BR</code> (default <code>en-US</code>). Marked <span class="badge badge-lang">lang</span>.</dd>
+                    <dt><code>Content-Type</code></dt>
+                    <dd><code>application/json</code> for POST/PUT bodies unless uploading files.</dd>
+                </dl>
+                <div class="note">
+                    Role-restricted routes require <span class="badge badge-role">admin</span> or
+                    <span class="badge badge-role">moderator</span> in addition to a valid token.
+                </div>
+
+                <h2 id="auth-module">Auth <code>/auth</code></h2>
+                <p>User registration, login, token refresh, and session management.</p>
+                <table class="endpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Path</th>
+                            <th>Access</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/auth/signup</code></td>
+                            <td>Public</td>
+                            <td>Register — <a href="#auth-signup">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/auth/login</code></td>
+                            <td>Public</td>
+                            <td>Login — <a href="#auth-login">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/auth/refreshToken</code></td>
+                            <td>Public</td>
+                            <td>Refresh token — <a href="#auth-refresh">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/auth/logout</code></td>
+                            <td><span class="badge badge-auth">auth</span></td>
+                            <td>Logout — <a href="#auth-logout">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/auth/me</code></td>
+                            <td><span class="badge badge-auth">auth</span></td>
+                            <td>Current authenticated user.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <section class="payload-section">
+                    <h3>POST request bodies</h3>
+
+                    <div class="payload-block" id="auth-signup">
+                        <h4><code>POST /auth/signup</code></h4>
+                        <p class="payload-intro">Registers a new user. Returns <code>accessToken</code> and <code>refreshToken</code> on success.</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>email</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Valid email address. Must be unique; duplicate emails return <code>409</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>password</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Minimum 6 characters. Stored hashed server-side.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>name</code></td>
+                                    <td>string</td>
+                                    <td class="req-no">No</td>
+                                    <td>Display name shown on the user profile.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>phone</code></td>
+                                    <td>string</td>
+                                    <td class="req-no">No</td>
+                                    <td>Contact phone number.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>nickname</code></td>
+                                    <td>string</td>
+                                    <td class="req-no">No</td>
+                                    <td>Public handle or username.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pre class="payload-example"><code>{
+  "email": "user@example.com",
+  "password": "secret123",
+  "name": "Jane Doe",
+  "nickname": "jane"
+}</code></pre>
+                    </div>
+
+                    <div class="payload-block" id="auth-login">
+                        <h4><code>POST /auth/login</code></h4>
+                        <p class="payload-intro">Authenticates an existing user. Returns a new <code>accessToken</code> and <code>refreshToken</code>.</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>email</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Registered email address.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>password</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Account password (minimum 6 characters).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pre class="payload-example"><code>{
+  "email": "user@example.com",
+  "password": "secret123"
+}</code></pre>
+                    </div>
+
+                    <div class="payload-block" id="auth-refresh">
+                        <h4><code>POST /auth/refreshToken</code></h4>
+                        <p class="payload-intro">Issues a new short-lived <code>accessToken</code> using a valid refresh token.</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>token</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Refresh token received from <code>/auth/signup</code> or <code>/auth/login</code>. Expires after 7 days.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pre class="payload-example"><code>{ "token": "&lt;refresh_token&gt;" }</code></pre>
+                    </div>
+
+                    <div class="payload-block" id="auth-logout">
+                        <h4><code>POST /auth/logout</code></h4>
+                        <p class="payload-intro">Revokes the refresh token server-side. Requires <span class="badge badge-auth">auth</span> header plus the body below.</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>token</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Refresh token to invalidate.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pre class="payload-example"><code>{ "token": "&lt;refresh_token&gt;" }</code></pre>
+                    </div>
+                </section>
+
+                <h2 id="users-module">Users API <code>/users-api</code></h2>
+                <p>Administrative user management. All routes require <span class="badge badge-auth">auth</span> and <span class="badge badge-role">admin | moderator</span>.</p>
+                <table class="endpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/users-api/</code></td>
+                            <td>List users (supports query options).</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/users-api/findById/:id</code></td>
+                            <td>Get user by ID.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/users-api/findByEmail</code></td>
+                            <td>Find user by email query param.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-put">PUT</span></td>
+                            <td><code>/users-api/update/:id</code></td>
+                            <td>Update user.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-delete">DELETE</span></td>
+                            <td><code>/users-api/delete/:id</code></td>
+                            <td>Delete user.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 id="disney-module">Disney API (Disneydle) <code>/disney-api</code></h2>
+                <p>Disney movie catalog and daily guessing game. Public read routes use <span class="badge badge-lang">lang</span>; writes require <span class="badge badge-auth">auth</span> + <span class="badge badge-role">admin | moderator</span>.</p>
+                <table class="endpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Path</th>
+                            <th>Access</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/disney-api/</code></td>
+                            <td><span class="badge badge-lang">lang</span></td>
+                            <td>List movies.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/disney-api/findById/:id</code></td>
+                            <td><span class="badge badge-lang">lang</span></td>
+                            <td>Movie by ID.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/disney-api/autocomplete?text=</code></td>
+                            <td><span class="badge badge-lang">lang</span></td>
+                            <td>Autocomplete search.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/disney-api/movieOfDay?date=</code></td>
+                            <td><span class="badge badge-lang">lang</span></td>
+                            <td>Movie of the day for a date.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/disney-api/timeRemaining</code></td>
+                            <td><span class="badge badge-lang">lang</span></td>
+                            <td>Time until next daily reset.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/disney-api/guess</code></td>
+                            <td><span class="badge badge-lang">lang</span></td>
+                            <td>Submit a guess — <a href="#disney-guess">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/disney-api/create</code></td>
+                            <td>auth + role</td>
+                            <td>Create movie — <a href="#disney-create">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-put">PUT</span></td>
+                            <td><code>/disney-api/update/:id</code></td>
+                            <td>auth + role</td>
+                            <td>Update movie.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-delete">DELETE</span></td>
+                            <td><code>/disney-api/delete/:id</code></td>
+                            <td>auth + role</td>
+                            <td>Delete movie.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/disney-api/uploadImage/:id</code></td>
+                            <td>auth + role</td>
+                            <td>Upload poster — <a href="#disney-upload">multipart body</a>.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <section class="payload-section">
+                    <h3>POST request bodies</h3>
+
+                    <div class="payload-block" id="disney-guess">
+                        <h4><code>POST /disney-api/guess</code></h4>
+                        <p class="payload-intro">Compares your guess against today’s movie (or the movie for the requested date). Send <span class="badge badge-lang">lang</span> via header or query. Returns per-field hints (<code>correct</code>, <code>partial</code>, <code>wrong</code>, etc.).</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>id</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>MongoDB <code>_id</code> of the movie the player is guessing (from autocomplete or catalog).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pre class="payload-example"><code>{ "id": "507f1f77bcf86cd799439011" }</code></pre>
+                    </div>
+
+                    <div class="payload-block" id="disney-create">
+                        <h4><code>POST /disney-api/create</code></h4>
+                        <p class="payload-intro">Creates a new Disneydle movie entry. Requires <span class="badge badge-auth">auth</span> and <span class="badge badge-role">admin | moderator</span>.</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>date</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Release year or date label used in guess comparisons (e.g. <code>"1994"</code>).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>decade</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Decade bucket shown in hints (e.g. <code>"1990s"</code>).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>animation_style</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Animation technique (e.g. <code>"CGI"</code>, <code>"Traditional"</code>).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>box_office</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Box-office value as a string (e.g. <code>"$1.05B"</code>). Used for greater/less hints.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>translations</code></td>
+                                    <td>object</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Localized movie data for the guessing game (see nested fields below).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>translations.title</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Movie title in the active locale.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>translations.cover_image</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>URL or path to the poster image returned in guess results.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>translations.main_characters</code></td>
+                                    <td>string[]</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Names of main characters (partial match supported in guesses).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>translations.main_character_types</code></td>
+                                    <td>string[]</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Character archetypes (e.g. princess, animal sidekick).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>translations.location</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Primary setting or kingdom.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>translations.genre</code></td>
+                                    <td>string[]</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Genre tags (e.g. <code>["Musical", "Adventure"]</code>).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pre class="payload-example"><code>{
+  "date": "1994",
+  "decade": "1990s",
+  "animation_style": "Traditional",
+  "box_office": "$968M",
+  "translations": {
+    "title": "The Lion King",
+    "cover_image": "/img/movies/en-US/lion-king.jpeg",
+    "main_characters": ["Simba", "Mufasa", "Scar"],
+    "main_character_types": ["Lion", "Hyena"],
+    "location": "Pride Lands",
+    "genre": ["Musical", "Adventure"]
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="payload-block" id="disney-upload">
+                        <h4><code>POST /disney-api/uploadImage/:id</code></h4>
+                        <p class="payload-intro">Uploads a poster image for an existing movie. Use <code>multipart/form-data</code>, not JSON.</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>file</code></td>
+                                    <td>file</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Image file in the multipart body. Stored in Google Drive; updates the movie’s image fields.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <h2 id="gemini-module">Gemini <code>/gemini</code></h2>
+                <p>Google Gemini proxy for chat and token counting. Public endpoints.</p>
+                <table class="endpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/gemini/message</code></td>
+                            <td>Chat — <a href="#gemini-message">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/gemini/countTokens</code></td>
+                            <td>Count tokens — <a href="#gemini-count-tokens">request body</a>.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <section class="payload-section">
+                    <h3>POST request bodies</h3>
+
+                    <div class="payload-block" id="gemini-message">
+                        <h4><code>POST /gemini/message</code></h4>
+                        <p class="payload-intro">Proxies a prompt to Google Gemini and returns the model response.</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>contents</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Prompt or message text sent to the model.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>config</code></td>
+                                    <td>object</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Generation options passed to the Gemini SDK (e.g. <code>temperature</code>, <code>maxOutputTokens</code>, safety settings).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>model</code></td>
+                                    <td>string</td>
+                                    <td class="req-no">No</td>
+                                    <td>Gemini model ID. Defaults to <code>gemini-2.5-flash</code> when omitted.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pre class="payload-example"><code>{
+  "contents": "Explain JWT in one paragraph.",
+  "config": { "temperature": 0.7 },
+  "model": "gemini-2.5-flash"
+}</code></pre>
+                    </div>
+
+                    <div class="payload-block" id="gemini-count-tokens">
+                        <h4><code>POST /gemini/countTokens</code></h4>
+                        <p class="payload-intro">Estimates token usage for a given prompt before calling the model.</p>
+                        <table class="payload-table">
+                            <thead>
+                                <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>contents</code></td>
+                                    <td>string</td>
+                                    <td class="req-yes">Yes</td>
+                                    <td>Text to measure (same format as <code>/gemini/message</code>).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>model</code></td>
+                                    <td>string</td>
+                                    <td class="req-no">No</td>
+                                    <td>Model used for counting. Defaults to <code>gemini-2.5-flash</code>.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pre class="payload-example"><code>{
+  "contents": "Long document text to measure..."
+}</code></pre>
+                    </div>
+                </section>
+
+                <h2 id="minha-grana-module">Minha Grana API <code>/minha-grana-api</code></h2>
+                <p>Personal finance: categories, transactions, and billing plans. All routes require <span class="badge badge-auth">auth</span>.</p>
+
+                <h3 id="categories">Categories <code>/minha-grana-api/category</code></h3>
+                <table class="endpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/minha-grana-api/category/</code></td>
+                            <td>List categories.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/minha-grana-api/category/autocomplete?text=</code></td>
+                            <td>Autocomplete by name.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/minha-grana-api/category/findById/:id</code></td>
+                            <td>Category by ID.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/minha-grana-api/category/findByName/:name</code></td>
+                            <td>Category by name.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/minha-grana-api/category/create</code></td>
+                            <td>Create category — see <a href="#category-create">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-put">PUT</span></td>
+                            <td><code>/minha-grana-api/category/update/:id</code></td>
+                            <td>Update <code>{ "name"?: "..." }</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-delete">DELETE</span></td>
+                            <td><code>/minha-grana-api/category/delete/:id</code></td>
+                            <td>Delete category.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="payload-block" id="category-create">
+                    <h4><code>POST /minha-grana-api/category/create</code></h4>
+                    <p class="payload-intro">Creates a spending/income category scoped to the authenticated user.</p>
+                    <table class="payload-table">
+                        <thead>
+                            <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>name</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Category label (e.g. <code>"Groceries"</code>, <code>"Salary"</code>). Used in autocomplete and transaction linking.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="payload-example"><code>{ "name": "Groceries" }</code></pre>
+                </div>
+
+                <h3 id="transactions">Transactions <code>/minha-grana-api/transaction</code></h3>
+                <table class="endpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/minha-grana-api/transaction/</code></td>
+                            <td>List transactions.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/minha-grana-api/transaction/findById/:id</code></td>
+                            <td>Transaction by ID.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/minha-grana-api/transaction/create</code></td>
+                            <td>Create transaction — see <a href="#transaction-create">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-put">PUT</span></td>
+                            <td><code>/minha-grana-api/transaction/update/:id</code></td>
+                            <td>Update transaction.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-delete">DELETE</span></td>
+                            <td><code>/minha-grana-api/transaction/delete/:id</code></td>
+                            <td>Delete transaction.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="payload-block" id="transaction-create">
+                    <h4><code>POST /minha-grana-api/transaction/create</code></h4>
+                    <p class="payload-intro">Records an income or expense for the authenticated user. <code>categoryId</code> must reference an existing category owned by the same user.</p>
+                    <table class="payload-table">
+                        <thead>
+                            <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>type</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Transaction direction: <code>"income"</code> (money in) or <code>"expense"</code> (money out).</td>
+                            </tr>
+                            <tr>
+                                <td><code>name</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Short description shown in lists (e.g. <code>"Supermarket"</code>).</td>
+                            </tr>
+                            <tr>
+                                <td><code>amount</code></td>
+                                <td>number</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Monetary value. Use a positive number; sign is implied by <code>type</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><code>date</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>When the transaction occurred (ISO 8601 date string, e.g. <code>"2025-05-20"</code>).</td>
+                            </tr>
+                            <tr>
+                                <td><code>paymentMethod</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>How it was paid: <code>"credit"</code>, <code>"pix"</code>, or <code>"cash"</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><code>dueDate</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Due or settlement date (ISO 8601). For credit expenses, typically the card due date.</td>
+                            </tr>
+                            <tr>
+                                <td><code>categoryId</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>MongoDB <code>_id</code> of the category from <code>/category/create</code>.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="payload-example"><code>{
+  "type": "expense",
+  "name": "Weekly groceries",
+  "amount": 245.90,
+  "date": "2025-05-20",
+  "paymentMethod": "credit",
+  "dueDate": "2025-06-10",
+  "categoryId": "507f1f77bcf86cd799439011"
+}</code></pre>
+                </div>
+
+                <h3 id="billing">Billing <code>/minha-grana-api/billing</code></h3>
+                <table class="endpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/minha-grana-api/billing/</code></td>
+                            <td>List billing records.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/minha-grana-api/billing/findById/:id</code></td>
+                            <td>Billing by ID.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/minha-grana-api/billing/create</code></td>
+                            <td>Create billing plan — see <a href="#billing-create">request body</a>.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-put">PUT</span></td>
+                            <td><code>/minha-grana-api/billing/update/:id</code></td>
+                            <td>Update billing plan.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-delete">DELETE</span></td>
+                            <td><code>/minha-grana-api/billing/delete/:id</code></td>
+                            <td>Delete billing plan.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="payload-block" id="billing-create">
+                    <h4><code>POST /minha-grana-api/billing/create</code></h4>
+                    <p class="payload-intro">Defines a recurring monthly budget plan with expected amounts per category.</p>
+                    <table class="payload-table">
+                        <thead>
+                            <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>name</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Plan title (e.g. <code>"May 2025 budget"</code>).</td>
+                            </tr>
+                            <tr>
+                                <td><code>bill</code></td>
+                                <td>array</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Line items mapping categories to expected spending. At least one entry recommended.</td>
+                            </tr>
+                            <tr>
+                                <td><code>bill[].categoryId</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Category <code>_id</code> this line belongs to.</td>
+                            </tr>
+                            <tr>
+                                <td><code>bill[].expectedAmount</code></td>
+                                <td>string</td>
+                                <td class="req-yes">Yes</td>
+                                <td>Planned amount for that category (stored as string, e.g. <code>"500.00"</code>).</td>
+                            </tr>
+                            <tr>
+                                <td><code>icon</code></td>
+                                <td>string</td>
+                                <td class="req-no">No</td>
+                                <td>Icon name or URL for UI display.</td>
+                            </tr>
+                            <tr>
+                                <td><code>description</code></td>
+                                <td>string</td>
+                                <td class="req-no">No</td>
+                                <td>Longer notes about the billing plan.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre class="payload-example"><code>{
+  "name": "May 2025 budget",
+  "icon": "wallet",
+  "description": "Monthly household plan",
+  "bill": [
+    { "categoryId": "507f1f77bcf86cd799439011", "expectedAmount": "800.00" },
+    { "categoryId": "507f1f77bcf86cd799439012", "expectedAmount": "350.00" }
+  ]
+}</code></pre>
+                </div>
+            </article>
+        </main>
+
+        <aside class="infobox" aria-label="API summary">
+            <table>
+                <caption>Gavigo API</caption>
+                <tbody>
+                    <tr>
+                        <th>Type</th>
+                        <td>REST / JSON</td>
+                    </tr>
+                    <tr>
+                        <th>Base URL</th>
+                        <td><code>/</code> (this page)</td>
+                    </tr>
+                    <tr>
+                        <th>Modules</th>
+                        <td>
+                            <a href="#auth-module">/auth</a><br>
+                            <a href="#users-module">/users-api</a><br>
+                            <a href="#disney-module">/disney-api</a><br>
+                            <a href="#gemini-module">/gemini</a><br>
+                            <a href="#minha-grana-module">/minha-grana-api</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Languages</th>
+                        <td><code>en-US</code>, <code>pt-BR</code></td>
+                    </tr>
+                    <tr>
+                        <th>Auth</th>
+                        <td>JWT Bearer</td>
+                    </tr>
+                </tbody>
+            </table>
+        </aside>
     </div>
+
+    <footer class="site-footer">
+        Gavigo API documentation — served at <code>GET /</code>
+    </footer>
 </body>
 </html>
