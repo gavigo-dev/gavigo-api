@@ -17,30 +17,25 @@ class CategoryRepository extends BaseRepository<
     }
 
     async autocomplete(text: string, userId: string) {
+        if (!text.trim()) {
+            return this.model
+                .find({ userId })
+                .select('name')
+                .sort({ name: 1 })
+                .lean()
+        }
+
         const categories = await this.model
             .aggregate()
             .search({
                 index: 'minha-grana-api-category',
-                compound: {
-                    must: [
-                        {
-                            autocomplete: {
-                                query: text,
-                                path: 'name',
-                                tokenOrder: 'sequential'
-                            }
-                        }
-                    ],
-                    filter: [
-                        {
-                            equals: {
-                                path: 'userId',
-                                value: userId
-                            }
-                        }
-                    ]
+                autocomplete: {
+                    query: text,
+                    path: 'name',
+                    tokenOrder: 'sequential'
                 }
             })
+            .match({ userId: userId })
             .project({
                 name: 1,
                 score: { $meta: 'searchScore' }
